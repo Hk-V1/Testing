@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FastAPI Users Demo</title>
+</head>
+<body>
+    <h2>Create User</h2>
+    <input type="text" id="name" placeholder="Name">
+    <input type="email" id="email" placeholder="Email">
+    <button onclick="createUser()">Create</button>
+
+    <h2>Users List</h2>
+    <button onclick="getUsers()">Refresh</button>
+    <ul id="usersList"></ul>
+
+    <script>
+        const API_BASE = "https://testing-lurm.onrender.com"; // Change if needed
+
+        async function createUser() {
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+
+            const res = await fetch(`${API_BASE}/users?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`, {
+                method: "POST"
+            });
+
+            const data = await res.json();
+            alert("User created: " + JSON.stringify(data));
+        }
+
+        async function getUsers() {
+            const res = await fetch(`${API_BASE}/users`);
+            const users = await res.json();
+
+            const list = document.getElementById("usersList");
+            list.innerHTML = "";
+            users.forEach(user => {
+                const li = document.createElement("li");
+                li.textContent = `${user.id}: ${user.name} (${user.email})`;
+                list.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
