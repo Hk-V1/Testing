@@ -14,18 +14,22 @@
     <ul id="usersList"></ul>
 
     <script>
-        const API_BASE = "https://testing-lurm.onrender.com"; // Change if needed
+        const API_BASE = "https://testing-lurm.onrender.com";
 
         async function createUser() {
             const name = document.getElementById("name").value;
             const email = document.getElementById("email").value;
 
-            const res = await fetch(`${API_BASE}/users?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`, {
-                method: "POST"
+            const res = await fetch(`${API_BASE}/users`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name, email })
             });
 
             const data = await res.json();
-            alert("User created: " + JSON.stringify(data));
+            alert("User created: " + JSON.stringify(data, null, 2));
         }
 
         async function getUsers() {
