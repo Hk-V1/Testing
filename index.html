@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>FastAPI Users Demo</title>
+    <title>FastAPI User App</title>
 </head>
 <body>
     <h2>Create User</h2>
@@ -11,39 +11,52 @@
 
     <h2>Users List</h2>
     <button onclick="getUsers()">Refresh</button>
-    <ul id="usersList"></ul>
+    <ul id="users"></ul>
 
     <script>
-        const API_BASE = "https://testing-lurm.onrender.com";
+        const API_URL = "https://testing-lurm.onrender.com";
 
         async function createUser() {
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
+            const nameField = document.getElementById("name");
+            const emailField = document.getElementById("email");
 
-            const res = await fetch(`${API_BASE}/users`, {
+            const name = nameField.value.trim();
+            const email = emailField.value.trim();
+
+            if (!name || !email) {
+                alert("Please enter both name and email");
+                return;
+            }
+
+            await fetch(`${API_URL}/users`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, email })
             });
 
-            const data = await res.json();
-            alert("User created: " + JSON.stringify(data, null, 2));
+            // Clear inputs after successful save
+            nameField.value = "";
+            emailField.value = "";
+
+            getUsers();
         }
 
         async function getUsers() {
-            const res = await fetch(`${API_BASE}/users`);
-            const users = await res.json();
+            const res = await fetch(`${API_URL}/users`);
+            const data = await res.json();
 
-            const list = document.getElementById("usersList");
-            list.innerHTML = "";
-            users.forEach(user => {
+            const usersList = document.getElementById("users");
+            usersList.innerHTML = "";
+
+            data.forEach(user => {
                 const li = document.createElement("li");
                 li.textContent = `${user.id}: ${user.name} (${user.email})`;
-                list.appendChild(li);
+                usersList.appendChild(li);
             });
         }
+
+        // Load users on first load
+        getUsers();
     </script>
 </body>
 </html>
