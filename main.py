@@ -8,6 +8,10 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+@app.get("/")
+def root():
+    return {"message": "FastAPI backend is running 🚀", "docs_url": "/docs"}
+
 @app.post("/users")
 def create_user(name: str, email: str, db: Session = Depends(get_db)):
     user = User(name=name, email=email)
@@ -19,3 +23,4 @@ def create_user(name: str, email: str, db: Session = Depends(get_db)):
 @app.get("/users")
 def get_users(db: Session = Depends(get_db)):
     return db.query(User).all()
+
